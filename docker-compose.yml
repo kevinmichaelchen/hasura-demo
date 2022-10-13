@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    ports:
+    - "15432:5432"
+    volumes:
+    - pg_data:/var/lib/postgresql/data
+    environment:
+      # postgres is the default
+      POSTGRES_USER: postgres
+      # by default, it uses POSTGRES_USER
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgrespassword
+
+  hasura:
+    image: hasura/graphql-engine:v2.13.0.cli-migrations-v3
+    ports:
+    - "8080:8080"
+    depends_on:
+    - "postgres"
+    restart: always
+    volumes:  
+      - ./schema:/var/schema
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      # Disable in Prod.
+      # Changes in Server Console don't auto-track, unlike those in CLI Console.
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      # Debugging mode. Disable in Prod.
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_MIGRATIONS_DIR: "/var/schema/migrations"
+      HASURA_GRAPHQL_METADATA_DIR: "/var/schema/metadata"
+
+volumes:
+    pg_data:
