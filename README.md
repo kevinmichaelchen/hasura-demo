@@ -42,3 +42,34 @@ To start the Hasura Console with the CLI, run:
 ```shell
 make console
 ```
+
+## GraphQL
+Hasura generates a very powerful [GraphQL API](https://hasura.io/docs/latest/getting-started/how-it-works/index/#tracking-tables--schema-generation).
+
+Here are the most basic examples:
+
+### Insert
+To create a new animal:
+```graphql
+mutation CreateAnimal {
+  insert_animal(objects: {
+    species: "Canis lupus"
+  }) {
+    returning {
+      id
+      species
+    }
+  }
+}
+```
+
+### Query
+To list all animals:
+```graphql
+{
+  animal {
+    id
+    species
+  }
+}
+```
