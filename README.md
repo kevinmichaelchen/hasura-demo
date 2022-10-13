@@ -1,6 +1,19 @@
 # hasura-demo
 Demo of Dockerized Hasura.
 
+## Getting started
+### Docker Containers
+Spin up Docker containers with:
+```shell
+docker-compose up -d
+```
+
+### Console
+To start the Hasura Console with the CLI, run:
+```shell
+make console
+```
+
 ## `schema` directory
 The `schema` directory will contain all migrations and metadata.
 
@@ -35,12 +48,6 @@ and update migrations and metadata files.
     environment:
       HASURA_GRAPHQL_MIGRATIONS_DIR: "/var/schema/migrations"
       HASURA_GRAPHQL_METADATA_DIR: "/var/schema/metadata"
-```
-
-## Console
-To start the Hasura Console with the CLI, run:
-```shell
-make console
 ```
 
 ## GraphQL
