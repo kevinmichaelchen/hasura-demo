@@ -16,12 +16,18 @@ are YAML files which define everything about the Hasura Server itself:
 > The Metadata can be version controlled to keep the Server configuration 
 > in-sync with your codebase.
 
-We can have Hasura create a `schema` directory with:
+The `schema` directory was created with:
 ```shell
 hasura init schema
 ```
+(This only needs to happen once).
 
-The Hasura container has a volume configuration in the Docker Compose file:
+### Developer Workflow
+
+Developers will need to run Hasura locally to create any migrations.
+
+The Docker volume is critical for allowing your local Hasura Server create
+and update migrations and metadata files.
 ```yaml
   hasura:
     volumes:
@@ -31,8 +37,8 @@ The Hasura container has a volume configuration in the Docker Compose file:
       HASURA_GRAPHQL_METADATA_DIR: "/var/schema/metadata"
 ```
 
-Whenever you use the Hasura CLI (the `hasura` command), you must be in the
-`schema` directory. Or you can use the `hasura --project` flag, e.g.,
+## Console
+To start the Hasura Console with the CLI, run:
 ```shell
-hasura --project schema console
+make console
 ```
