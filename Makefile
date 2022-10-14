@@ -8,3 +8,4 @@ pull-schema:
 
 .PHONY: gen-client
 gen-client:
+	go run github.com/Khan/genqlient cmd/client/genqlient.yaml
