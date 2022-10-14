@@ -1,0 +1,12 @@
+# Default genqlient config; for full documentation see:
+# https://github.com/Khan/genqlient/blob/main/docs/genqlient.yaml
+schema: schema.graphql
+operations:
+- genqlient.graphql
+generated: generated.go
+# The package name for the output code; defaults to the directory name of
+# the generated-code file.
+package: main
+bindings:
+  uuid:
+    type: string
