@@ -1,0 +1,438 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """measured in seconds"""
+  ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+) on QUERY
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """does the column match the given case-insensitive pattern"""
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """does the column match the given pattern"""
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
+  _similar: String
+}
+
+"""animal"""
+type animal {
+  id: uuid!
+  species: String!
+}
+
+"""
+aggregated selection of "animal"
+"""
+type animal_aggregate {
+  aggregate: animal_aggregate_fields
+  nodes: [animal!]!
+}
+
+"""
+aggregate fields of "animal"
+"""
+type animal_aggregate_fields {
+  count(columns: [animal_select_column!], distinct: Boolean): Int!
+  max: animal_max_fields
+  min: animal_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "animal". All fields are combined with a logical 'AND'.
+"""
+input animal_bool_exp {
+  _and: [animal_bool_exp!]
+  _not: animal_bool_exp
+  _or: [animal_bool_exp!]
+  id: uuid_comparison_exp
+  species: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "animal"
+"""
+enum animal_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  animal_pkey
+
+  """
+  unique or primary key constraint on columns "species"
+  """
+  animal_species_key
+}
+
+"""
+input type for inserting data into table "animal"
+"""
+input animal_insert_input {
+  id: uuid
+  species: String
+}
+
+"""aggregate max on columns"""
+type animal_max_fields {
+  id: uuid
+  species: String
+}
+
+"""aggregate min on columns"""
+type animal_min_fields {
+  id: uuid
+  species: String
+}
+
+"""
+response of any mutation on the table "animal"
+"""
+type animal_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [animal!]!
+}
+
+"""
+on_conflict condition type for table "animal"
+"""
+input animal_on_conflict {
+  constraint: animal_constraint!
+  update_columns: [animal_update_column!]! = []
+  where: animal_bool_exp
+}
+
+"""Ordering options when selecting data from "animal"."""
+input animal_order_by {
+  id: order_by
+  species: order_by
+}
+
+"""primary key columns input for table: animal"""
+input animal_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "animal"
+"""
+enum animal_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  species
+}
+
+"""
+input type for updating data in table "animal"
+"""
+input animal_set_input {
+  id: uuid
+  species: String
+}
+
+"""
+Streaming cursor of the table "animal"
+"""
+input animal_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: animal_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input animal_stream_cursor_value_input {
+  id: uuid
+  species: String
+}
+
+"""
+update columns of table "animal"
+"""
+enum animal_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  species
+}
+
+input animal_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: animal_set_input
+  where: animal_bool_exp!
+}
+
+"""ordering argument of a cursor"""
+enum cursor_ordering {
+  """ascending ordering of the cursor"""
+  ASC
+
+  """descending ordering of the cursor"""
+  DESC
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  delete data from the table: "animal"
+  """
+  delete_animal(
+    """filter the rows which have to be deleted"""
+    where: animal_bool_exp!
+  ): animal_mutation_response
+
+  """
+  delete single row from the table: "animal"
+  """
+  delete_animal_by_pk(id: uuid!): animal
+
+  """
+  insert data into the table: "animal"
+  """
+  insert_animal(
+    """the rows to be inserted"""
+    objects: [animal_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: animal_on_conflict
+  ): animal_mutation_response
+
+  """
+  insert a single row into the table: "animal"
+  """
+  insert_animal_one(
+    """the row to be inserted"""
+    object: animal_insert_input!
+
+    """upsert condition"""
+    on_conflict: animal_on_conflict
+  ): animal
+
+  """
+  update data of the table: "animal"
+  """
+  update_animal(
+    """sets the columns of the filtered rows to the given values"""
+    _set: animal_set_input
+
+    """filter the rows which have to be updated"""
+    where: animal_bool_exp!
+  ): animal_mutation_response
+
+  """
+  update single row of the table: "animal"
+  """
+  update_animal_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: animal_set_input
+    pk_columns: animal_pk_columns_input!
+  ): animal
+
+  """
+  update multiples rows of table: "animal"
+  """
+  update_animal_many(
+    """updates to execute, in order"""
+    updates: [animal_updates!]!
+  ): [animal_mutation_response]
+}
+
+"""column ordering options"""
+enum order_by {
+  """in ascending order, nulls last"""
+  asc
+
+  """in ascending order, nulls first"""
+  asc_nulls_first
+
+  """in ascending order, nulls last"""
+  asc_nulls_last
+
+  """in descending order, nulls first"""
+  desc
+
+  """in descending order, nulls first"""
+  desc_nulls_first
+
+  """in descending order, nulls last"""
+  desc_nulls_last
+}
+
+type query_root {
+  """
+  fetch data from the table: "animal"
+  """
+  animal(
+    """distinct select on columns"""
+    distinct_on: [animal_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [animal_order_by!]
+
+    """filter the rows returned"""
+    where: animal_bool_exp
+  ): [animal!]!
+
+  """
+  fetch aggregated fields from the table: "animal"
+  """
+  animal_aggregate(
+    """distinct select on columns"""
+    distinct_on: [animal_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [animal_order_by!]
+
+    """filter the rows returned"""
+    where: animal_bool_exp
+  ): animal_aggregate!
+
+  """fetch data from the table: "animal" using primary key columns"""
+  animal_by_pk(id: uuid!): animal
+}
+
+type subscription_root {
+  """
+  fetch data from the table: "animal"
+  """
+  animal(
+    """distinct select on columns"""
+    distinct_on: [animal_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [animal_order_by!]
+
+    """filter the rows returned"""
+    where: animal_bool_exp
+  ): [animal!]!
+
+  """
+  fetch aggregated fields from the table: "animal"
+  """
+  animal_aggregate(
+    """distinct select on columns"""
+    distinct_on: [animal_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [animal_order_by!]
+
+    """filter the rows returned"""
+    where: animal_bool_exp
+  ): animal_aggregate!
+
+  """fetch data from the table: "animal" using primary key columns"""
+  animal_by_pk(id: uuid!): animal
+
+  """
+  fetch data from the table in a streaming manner : "animal"
+  """
+  animal_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [animal_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: animal_bool_exp
+  ): [animal!]!
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+

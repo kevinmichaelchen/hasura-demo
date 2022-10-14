@@ -1,0 +1,8 @@
+query getAnimal($species: String!) {
+    animal(where: {
+        species: {_eq: $species}
+    }) {
+        id
+        species
+    }
+}
